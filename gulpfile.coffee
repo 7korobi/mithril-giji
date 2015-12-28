@@ -23,7 +23,7 @@ gulp.task "make", ->
   gulp
   .src "src/*.coffee"
   .pipe $.coffee()
-  .pipe $.concat "mithril-giji.js"
+  .pipe $.concat "mithril.giji.js"
   .pipe $.header banner, {pkg}
   .pipe gulp.dest "."
 
