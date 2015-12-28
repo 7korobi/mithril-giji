@@ -4,7 +4,7 @@
     "7korobi <7korobi@gmail.com>"
   ],
   "description": "mithril library for 人狼議事",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "main": "mithril.giji.js",
   "moduleType": [],
   "license": "MIT",

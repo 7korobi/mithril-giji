@@ -1,6 +1,6 @@
 /**
  mithril-giji - mithril library for 人狼議事
- @version v0.0.4
+ @version v0.0.7
  @link https://github.com/7korobi/mithril-giji
  @license 
 **/
