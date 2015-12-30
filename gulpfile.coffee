@@ -26,6 +26,9 @@ gulp.task "make", ->
   .pipe $.concat "mithril.giji.js"
   .pipe $.header banner, {pkg}
   .pipe gulp.dest "."
+  .pipe $.uglify preserveComments: 'license'
+  .pipe $.concat "mithril.giji.min.js"
+  .pipe gulp.dest "."
 
 gulp.task 'mocha', ["make"], ->
   gulp
