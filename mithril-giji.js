@@ -60,16 +60,10 @@
         return win.do_event_list(win.on.layout, e);
       },
       resize: function(e) {
-        var docElem, ref, short;
+        var docElem;
         docElem = document.documentElement;
-        short = Math.min(docElem.clientWidth, docElem.clientHeight);
+        win.short = Math.min(docElem.clientWidth, docElem.clientHeight);
         win.width = docElem.clientWidth;
-        if (short < 380) {
-          head.browser.viewport = "width=device-width, maximum-scale=2.0, minimum-scale=0.5, initial-scale=0.5";
-          if ((ref = document.querySelector("meta[name=viewport]")) != null) {
-            ref.content = head.browser.viewport;
-          }
-        }
         if (window.innerHeight > window.innerWidth) {
           win.landscape = false;
           win.portlate = true;
@@ -129,7 +123,7 @@
           var dom;
           dom = document.querySelector(query);
           if (!!dom && cb) {
-            return m.mount(dom, cb(dom, layout));
+            return m.mount(dom, cb(dom));
           }
         });
       }
@@ -141,6 +135,8 @@
     right: 0,
     height: 0,
     width: 0,
+    short: 0,
+    browser: {},
     accel: {},
     rotate: {},
     gravity: {},
@@ -210,7 +206,9 @@
 }).call(this);
 
 (function() {
-  var Layout, win, z_depth;
+  var Layout, _, win, z_depth;
+
+  _ = require('lodash');
 
   Layout = (function() {
     var move;
@@ -249,12 +247,15 @@
       });
     };
 
-    function Layout(box, dx1, dy1, dz, absolute1, duration1) {
+    function Layout(box, dx, dy, absolute, duration, dz) {
       this.box = box;
-      this.dx = dx1;
-      this.dy = dy1;
-      this.absolute = absolute1 != null ? absolute1 : false;
-      this.duration = duration1 != null ? duration1 : DELAY.animato;
+      this.dx = dx;
+      this.dy = dy;
+      this.absolute = absolute != null ? absolute : false;
+      this.duration = duration != null ? duration : 200;
+      if (dz == null) {
+        dz = ++z_depth;
+      }
       if (!this.box) {
         return;
       }
@@ -329,9 +330,15 @@
         this.box.style.left = (x + win.left) + "px";
         this.box.style.top = (y + win.top) + "px";
         this.box.style.webkitTransform = "";
-        this.box.style.mozTransform = "";
-        this.box.style.msTransform = "";
-        this.box.style.oTransform = "";
+        if (win.browser.ff) {
+          this.box.style.mozTransform = "";
+        }
+        if (win.browser.ie) {
+          this.box.style.msTransform = "";
+        }
+        if (win.browser.opera) {
+          this.box.style.oTransform = "";
+        }
         return this.box.style.transform = "";
       } else {
         this.box.style.position = "fixed";
@@ -339,13 +346,13 @@
         this.box.style.top = 0;
         transform = "translate(" + x + "px, " + y + "px)";
         this.box.style.webkitTransform = transform;
-        if (head.browser.ff) {
+        if (win.browser.ff) {
           this.box.style.mozTransform = transform;
         }
-        if (head.browser.ie) {
+        if (win.browser.ie) {
           this.box.style.msTransform = transform;
         }
-        if (head.browser.opera) {
+        if (win.browser.opera) {
           this.box.style.oTransform = transform;
         }
         return this.box.style.transform = transform;
@@ -355,13 +362,13 @@
     Layout.prototype.transition = function() {
       var trans;
       trans = this.duration && !this.absolute ? "all " + this.duration + "ms ease-in-out 0" : "";
-      if (head.browser.ff) {
+      if (win.browser.ff) {
         this.box.style.mozTransition = trans;
       }
-      if (head.browser.ie) {
+      if (win.browser.ie) {
         this.box.style.msTransition = trans;
       }
-      if (head.browser.opera) {
+      if (win.browser.opera) {
         this.box.style.oTransition = trans;
       }
       return this.box.style.transition = trans;
@@ -390,22 +397,7 @@
 
   win = module.exports;
 
-  win.layout = function(query, dx, dy, dz, absolute, duration, cb) {
-    if (dz == null) {
-      dz = ++z_depth;
-    }
-    if (absolute == null) {
-      absolute = false;
-    }
-    if (duration == null) {
-      duration = 200;
-    }
-    return win.mount(query, function(dom) {
-      var layout;
-      layout = new Layout(dom, dx, dy, dz, absolute, duration);
-      return cb(dom, layout);
-    });
-  };
+  win.layout = Layout;
 
   win.on.layout.push(Layout.move);
 

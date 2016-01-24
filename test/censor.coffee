@@ -1,20 +1,4 @@
-chai = require 'chai'
-sinon = require 'sinon'
-expect = chai.expect
-
-chai.use require 'sinon-chai'
-
-global.window =
-  innerHeight: 100
-  innerWidth: 100
-  scrollX: 10
-  scrollY: 20
-  requestAnimationFrame: (cb)->
-    cb()
-global.document =
-  documentElement:
-    clientWidth: 90
-  createElement: (o)-> console.log o
+{expect} = require('chai')
 win = require("../mithril-giji.js")
 
 describe "censor", ()->

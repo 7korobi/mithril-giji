@@ -1,9 +1,4 @@
-chai = require 'chai'
-sinon = require 'sinon'
-expect = chai.expect
-
-chai.use require 'sinon-chai'
-
+{expect} = require('chai')
 win = require("../mithril-giji.js")
 
 describe "events", ()->

@@ -1,3 +1,4 @@
+_ = require 'lodash'
 
 class Layout
   @list = {}
@@ -24,7 +25,7 @@ class Layout
       width: win.width
       height: win.height
 
-  constructor: (@box, @dx, @dy, dz, @absolute = false, @duration = DELAY.animato)->
+  constructor: (@box, @dx, @dy, @absolute = false, @duration = 200, dz = ++ z_depth)->
     return unless @box
 
     @duration /= 4 if @absolute
@@ -65,9 +66,9 @@ class Layout
       @box.style.left = "#{x + win.left}px"
       @box.style.top = "#{y + win.top}px"
       @box.style.webkitTransform = ""
-      @box.style.mozTransform = ""
-      @box.style.msTransform = ""
-      @box.style.oTransform = ""
+      @box.style.mozTransform = "" if win.browser.ff
+      @box.style.msTransform = "" if win.browser.ie
+      @box.style.oTransform = "" if win.browser.opera
       @box.style.transform = ""
     else
       @box.style.position = "fixed"
@@ -76,9 +77,9 @@ class Layout
 
       transform  = "translate(#{x}px, #{y}px)"
       @box.style.webkitTransform = transform
-      @box.style.mozTransform = transform if head.browser.ff
-      @box.style.msTransform = transform if head.browser.ie
-      @box.style.oTransform = transform if head.browser.opera
+      @box.style.mozTransform = transform if win.browser.ff
+      @box.style.msTransform = transform if win.browser.ie
+      @box.style.oTransform = transform if win.browser.opera
       @box.style.transform = transform
 
   transition: ->
@@ -88,9 +89,9 @@ class Layout
       else
         ""
 
-    @box.style.mozTransition = trans if head.browser.ff
-    @box.style.msTransition = trans if head.browser.ie
-    @box.style.oTransition = trans if head.browser.opera
+    @box.style.mozTransition = trans if win.browser.ff
+    @box.style.msTransition = trans if win.browser.ie
+    @box.style.oTransition = trans if win.browser.opera
     @box.style.transition = trans
 
   translate: ->
@@ -107,10 +108,7 @@ class Layout
 z_depth = 1000
 
 win = module.exports
-win.layout = (query, dx, dy, dz = ++z_depth, absolute = false, duration = 200, cb)->
-  win.mount query, (dom)->
-    layout = new Layout dom, dx, dy, dz, absolute, duration
-    cb(dom, layout)
+win.layout = Layout
 
 win.on.layout.push Layout.move
 win.on.scroll_end.push Layout.move

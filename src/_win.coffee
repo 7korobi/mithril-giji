@@ -44,12 +44,8 @@ module.exports = win =
 
     resize: (e)->
       docElem = document.documentElement
-      short = Math.min docElem.clientWidth, docElem.clientHeight
+      win.short = Math.min docElem.clientWidth, docElem.clientHeight
       win.width = docElem.clientWidth
-
-      if short < 380
-        head.browser.viewport = "width=device-width, maximum-scale=2.0, minimum-scale=0.5, initial-scale=0.5"
-        document.querySelector("meta[name=viewport]")?.content = head.browser.viewport
 
       if window.innerHeight > window.innerWidth
         win.landscape = false
@@ -110,7 +106,7 @@ module.exports = win =
     if cb
       win.on.load.push ->
         dom = document.querySelector(query)
-        m.mount dom, cb(dom, layout) if !!dom && cb
+        m.mount dom, cb(dom) if !!dom && cb
 
   top:     0
   horizon: 0
@@ -121,6 +117,9 @@ module.exports = win =
 
   height:  0
   width:   0
+  short:   0
+
+  browser: {}
 
   accel: {}
   rotate: {}
