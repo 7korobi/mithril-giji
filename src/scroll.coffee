@@ -1,4 +1,4 @@
-class @ScrollSpy
+class ScrollSpy
   @elems = {}
 
   @go: (id, offset)=>
@@ -12,7 +12,7 @@ class @ScrollSpy
       window.scrollBy(left_by, top_by) if left_by || top_by
 
   interval = 5000
-  window.setInterval ->
+  setInterval ->
     if win.scroll?.center
         win.scroll.tick( win.scroll.center , interval / 1000)
   , interval
@@ -44,7 +44,7 @@ class @ScrollSpy
         delete @elems[key]
     result
 
-  constructor: (@prop)->
+  constructor: ->
     @show_upper = true
     @size = 30
     @head = @tail = 0
@@ -153,3 +153,8 @@ class @ScrollSpy
           if id == @prop()
             window.requestAnimationFrame ->
               ScrollSpy.go id
+
+win = module.exports
+win.scroll = new ScrollSpy
+win.on.scroll_end.push ->
+  ScrollSpy.capture()

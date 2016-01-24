@@ -30,7 +30,7 @@ scroll_end = ->
   scan()
 
 
-@win =
+module.exports = win =
   do_event_list: (list, e)->
     return unless 0 < list.length
     for cb in list

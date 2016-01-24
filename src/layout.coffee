@@ -1,5 +1,5 @@
 
-class @Layout
+class Layout
   @list = {}
   @move = ->
     for key, o of Layout.list
@@ -103,3 +103,8 @@ class @Layout
       @from = to
       @translate()
     , @duration
+
+
+win = module.exports
+win.on.scroll_end.push Layout.move
+win.on.resize.push Layout.move
