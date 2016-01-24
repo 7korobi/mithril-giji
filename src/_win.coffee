@@ -38,6 +38,9 @@ module.exports = win =
     return
 
   do:
+    layout: (e)->
+      win.do_event_list win.on.layout, e
+
     resize: (e)->
       docElem = document.documentElement
       short = Math.min docElem.clientWidth, docElem.clientHeight
@@ -88,8 +91,10 @@ module.exports = win =
       win.do_event_list win.on.load, e
       win.do.resize()
       win.do.scroll()
+      win.do.layout()
 
   on:
+    layout: []
     resize: []
     scroll: []
     scroll_start: []

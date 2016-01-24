@@ -1,6 +1,6 @@
 /**
  mithril-giji - mithril library for 人狼議事
- @version v0.0.8
+ @version v0.0.14
  @link https://github.com/7korobi/mithril-giji
  @license 
 **/
@@ -56,6 +56,9 @@
       }
     },
     "do": {
+      layout: function(e) {
+        return win.do_event_list(win.on.layout, e);
+      },
       resize: function(e) {
         var docElem, ref, short;
         docElem = document.documentElement;
@@ -104,10 +107,12 @@
       load: function(e) {
         win.do_event_list(win.on.load, e);
         win["do"].resize();
-        return win["do"].scroll();
+        win["do"].scroll();
+        return win["do"].layout();
       }
     },
     on: {
+      layout: [],
       resize: [],
       scroll: [],
       scroll_start: [],
@@ -370,6 +375,8 @@
   })();
 
   win = module.exports;
+
+  win.on.layout.push(Layout.move);
 
   win.on.scroll_end.push(Layout.move);
 

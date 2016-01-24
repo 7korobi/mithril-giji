@@ -104,7 +104,7 @@ class Layout
       @translate()
     , @duration
 
-
 win = module.exports
+win.on.layout.push Layout.move
 win.on.scroll_end.push Layout.move
 win.on.resize.push Layout.move
