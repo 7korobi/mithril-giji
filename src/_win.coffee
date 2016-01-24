@@ -30,6 +30,7 @@ scroll_end = ->
   scan()
 
 
+
 module.exports = win =
   do_event_list: (list, e)->
     return unless 0 < list.length
@@ -103,6 +104,14 @@ module.exports = win =
     motion: []
     load: []
 
+  scroll: null
+  layout: null
+  mount: (query, cb)->
+    if cb
+      win.on.load.push ->
+        dom = document.querySelector(query)
+        m.mount dom, cb(dom, layout) if !!dom && cb
+
   top:     0
   horizon: 0
   bottom:  0
@@ -112,8 +121,6 @@ module.exports = win =
 
   height:  0
   width:   0
-
-  scroll: null
 
   accel: {}
   rotate: {}

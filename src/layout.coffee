@@ -104,7 +104,14 @@ class Layout
       @translate()
     , @duration
 
+z_depth = 1000
+
 win = module.exports
+win.layout = (query, dx, dy, dz = ++z_depth, absolute = false, duration = 200, cb)->
+  win.mount query, (dom)->
+    layout = new Layout dom, dx, dy, dz, absolute, duration
+    cb(dom, layout)
+
 win.on.layout.push Layout.move
 win.on.scroll_end.push Layout.move
 win.on.resize.push Layout.move

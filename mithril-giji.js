@@ -1,6 +1,6 @@
 /**
  mithril-giji - mithril library for 人狼議事
- @version v0.0.14
+ @version v0.0.15
  @link https://github.com/7korobi/mithril-giji
  @license 
 **/
@@ -121,6 +121,19 @@
       motion: [],
       load: []
     },
+    scroll: null,
+    layout: null,
+    mount: function(query, cb) {
+      if (cb) {
+        return win.on.load.push(function() {
+          var dom;
+          dom = document.querySelector(query);
+          if (!!dom && cb) {
+            return m.mount(dom, cb(dom, layout));
+          }
+        });
+      }
+    },
     top: 0,
     horizon: 0,
     bottom: 0,
@@ -128,7 +141,6 @@
     right: 0,
     height: 0,
     width: 0,
-    scroll: null,
     accel: {},
     rotate: {},
     gravity: {},
@@ -198,7 +210,7 @@
 }).call(this);
 
 (function() {
-  var Layout, win;
+  var Layout, win, z_depth;
 
   Layout = (function() {
     var move;
@@ -237,12 +249,12 @@
       });
     };
 
-    function Layout(box, dx, dy, dz, absolute, duration) {
+    function Layout(box, dx1, dy1, dz, absolute1, duration1) {
       this.box = box;
-      this.dx = dx;
-      this.dy = dy;
-      this.absolute = absolute != null ? absolute : false;
-      this.duration = duration != null ? duration : DELAY.animato;
+      this.dx = dx1;
+      this.dy = dy1;
+      this.absolute = absolute1 != null ? absolute1 : false;
+      this.duration = duration1 != null ? duration1 : DELAY.animato;
       if (!this.box) {
         return;
       }
@@ -374,7 +386,26 @@
 
   })();
 
+  z_depth = 1000;
+
   win = module.exports;
+
+  win.layout = function(query, dx, dy, dz, absolute, duration, cb) {
+    if (dz == null) {
+      dz = ++z_depth;
+    }
+    if (absolute == null) {
+      absolute = false;
+    }
+    if (duration == null) {
+      duration = 200;
+    }
+    return win.mount(query, function(dom) {
+      var layout;
+      layout = new Layout(dom, dx, dy, dz, absolute, duration);
+      return cb(dom, layout);
+    });
+  };
 
   win.on.layout.push(Layout.move);
 
