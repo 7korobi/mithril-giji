@@ -16,6 +16,7 @@
   ],
   "files": [
     "mithril-giji.js"
+    "mithril-giji.min.js"
   ],
   "dependencies": {
     "chai": "^3.4.1",
