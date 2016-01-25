@@ -1,9 +1,3 @@
-chai = require 'chai'
-sinon = require 'sinon'
-expect = chai.expect
-
-chai.use require 'sinon-chai'
-
 global.window =
   innerHeight: 100
   innerWidth: 100
