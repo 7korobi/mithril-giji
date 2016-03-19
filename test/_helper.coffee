@@ -15,6 +15,6 @@ global.document =
     parentElement: {}
   createElement: (o)-> console.log o
 
-global.m =
-  mount: (dom, vdom)->
-    {}
+global.m = require "mithril"
+global.m.mount = (dom, vdom)->
+  {}

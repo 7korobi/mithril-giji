@@ -1,13 +1,13 @@
 /**
  mithril-giji - mithril library for 人狼議事
- @version v0.0.16
+ @version v0.0.18
  @link https://github.com/7korobi/mithril-giji
  @license 
 **/
 
 
 (function() {
-  var scroll_end, set_scroll, win;
+  var event, progress, scroll_end, set_scroll, win;
 
   set_scroll = function(win) {
     win.left = window.scrollX;
@@ -145,6 +145,7 @@
     compass: 0,
     is_tap: false,
     deploy: function() {
+      var error, success;
       if ("onorientationchange" in window) {
         window.addEventListener('orientationchange', win["do"].scroll);
       } else {
@@ -198,11 +199,255 @@
           return console.log("on storage");
         });
       }
+      if (true) {
+        window.addEventListener("cut", function() {});
+        window.addEventListener("copy", function() {});
+        window.addEventListener("paste", function() {});
+      }
+      if (false) {
+        success = function(pos) {
+          var accuracy, altitude, altitudeAccuracy, heading, latitude, longitude, speed;
+          return latitude = pos.latitude, longitude = pos.longitude, accuracy = pos.accuracy, altitude = pos.altitude, altitudeAccuracy = pos.altitudeAccuracy, heading = pos.heading, speed = pos.speed, pos;
+        };
+        error = function(arg) {
+          var code, message;
+          message = arg.message, code = arg.code;
+        };
+        navigator.geolocation.watchPosition(success, error, {
+          enableHighAccuracy: true,
+          timeout: 1000,
+          maximumAge: 0
+        });
+      }
+      if (document.hidden) {
+        "隠れています。";
+      }
       if ("onload" in window) {
         return window.addEventListener("load", win["do"].load);
       }
     }
   };
+
+  if (window.applicationCache) {
+    event = function(arg) {
+      var timeStamp, type;
+      type = arg.type, timeStamp = arg.timeStamp;
+      return console.log("::" + type + " - " + timeStamp);
+    };
+    progress = function(arg) {
+      var lengthComputable, loaded, timeStamp, total, type;
+      type = arg.type, timeStamp = arg.timeStamp, lengthComputable = arg.lengthComputable, loaded = arg.loaded, total = arg.total;
+      return console.log("::" + type + " " + loaded + " / " + total + " - " + timeStamp);
+    };
+    applicationCache.addEventListener("checking", event);
+    applicationCache.addEventListener("downloading", event);
+    applicationCache.addEventListener("progress", progress);
+    applicationCache.addEventListener("cached", event);
+    applicationCache.addEventListener("noupdate", event);
+    applicationCache.addEventListener("updateready", event);
+    applicationCache.addEventListener("error", event);
+    applicationCache.addEventListener("obsolete", event);
+  }
+
+}).call(this);
+
+(function() {
+  var PackStorage, win;
+
+  PackStorage = (function() {
+    function PackStorage() {}
+
+    PackStorage.prototype.initialize = function() {};
+
+    return PackStorage;
+
+  })();
+
+  win = module.exports;
+
+  win.cookie = new PackStorage();
+
+  win.location = new PackStorage();
+
+}).call(this);
+
+(function() {
+  var cb, focus, kbd, mouse, progress, storage, touch;
+
+  cb = function() {};
+
+  storage = function(e) {
+    var key, newValue, oldValue, storageArea, url;
+    return key = e.key, oldValue = e.oldValue, newValue = e.newValue, url = e.url, storageArea = e.storageArea, e;
+  };
+
+  touch = function(e) {
+    var altKey, bubbles, cancelable, changedTouches, ctrlKey, currentTarget, detail, eventPhase, metaKey, preventDefault, shiftKey, stopImmediatePropagation, stopPropagation, target, targetTouches, timeStamp, touches, type, view;
+    touches = e.touches, targetTouches = e.targetTouches, changedTouches = e.changedTouches;
+    shiftKey = e.shiftKey, ctrlKey = e.ctrlKey, altKey = e.altKey, metaKey = e.metaKey;
+    view = e.view, detail = e.detail;
+    type = e.type, currentTarget = e.currentTarget, target = e.target, eventPhase = e.eventPhase, bubbles = e.bubbles, cancelable = e.cancelable, timeStamp = e.timeStamp;
+    return preventDefault = e.preventDefault, stopImmediatePropagation = e.stopImmediatePropagation, stopPropagation = e.stopPropagation, e;
+  };
+
+  progress = function(e) {
+    var bubbles, cancelable, currentTarget, eventPhase, lengthComputable, loaded, preventDefault, stopImmediatePropagation, stopPropagation, target, timeStamp, total, type;
+    lengthComputable = e.lengthComputable, loaded = e.loaded, total = e.total;
+    type = e.type, currentTarget = e.currentTarget, target = e.target, eventPhase = e.eventPhase, bubbles = e.bubbles, cancelable = e.cancelable, timeStamp = e.timeStamp;
+    return preventDefault = e.preventDefault, stopImmediatePropagation = e.stopImmediatePropagation, stopPropagation = e.stopPropagation, e;
+  };
+
+  focus = function(e) {
+    var bubbles, cancelable, currentTarget, detail, eventPhase, preventDefault, relatedTarget, stopImmediatePropagation, stopPropagation, target, timeStamp, type, view;
+    relatedTarget = e.relatedTarget;
+    view = e.view, detail = e.detail;
+    type = e.type, currentTarget = e.currentTarget, target = e.target, eventPhase = e.eventPhase, bubbles = e.bubbles, cancelable = e.cancelable, timeStamp = e.timeStamp;
+    return preventDefault = e.preventDefault, stopImmediatePropagation = e.stopImmediatePropagation, stopPropagation = e.stopPropagation, e;
+  };
+
+  mouse = function(e) {
+    var altKey, bubbles, button, buttons, cancelable, clientX, clientY, ctrlKey, currentTarget, detail, eventPhase, metaKey, momentX, momentY, preventDefault, relatedTarget, screenX, screenY, shiftKey, stopImmediatePropagation, stopPropagation, target, timeStamp, type, view;
+    clientX = e.clientX, clientY = e.clientY, momentX = e.momentX, momentY = e.momentY, buttons = e.buttons;
+    screenX = e.screenX, screenY = e.screenY, button = e.button, shiftKey = e.shiftKey, ctrlKey = e.ctrlKey, altKey = e.altKey, metaKey = e.metaKey, relatedTarget = e.relatedTarget;
+    view = e.view, detail = e.detail;
+    type = e.type, currentTarget = e.currentTarget, target = e.target, eventPhase = e.eventPhase, bubbles = e.bubbles, cancelable = e.cancelable, timeStamp = e.timeStamp;
+    return preventDefault = e.preventDefault, stopImmediatePropagation = e.stopImmediatePropagation, stopPropagation = e.stopPropagation, e;
+  };
+
+  kbd = function(e) {
+    var altKey, bubbles, cancelable, ctrlKey, currentTarget, detail, eventPhase, keyCode, metaKey, preventDefault, shiftKey, stopImmediatePropagation, stopPropagation, target, timeStamp, type, view;
+    keyCode = e.keyCode, shiftKey = e.shiftKey, ctrlKey = e.ctrlKey, altKey = e.altKey;
+    metaKey = e.metaKey;
+    view = e.view, detail = e.detail;
+    type = e.type, currentTarget = e.currentTarget, target = e.target, eventPhase = e.eventPhase, bubbles = e.bubbles, cancelable = e.cancelable, timeStamp = e.timeStamp;
+    return preventDefault = e.preventDefault, stopImmediatePropagation = e.stopImmediatePropagation, stopPropagation = e.stopPropagation, e;
+  };
+
+  ({
+    onload: cb,
+    onunload: cb,
+    onabort: cb,
+    onerror: cb,
+    onorientationchange: cb,
+    onresize: cb,
+    onmove: cb,
+    onclick: cb,
+    ondblclick: cb,
+    onkeydown: kbd,
+    onkeypress: kbd,
+    onkeyup: kbd,
+    onmousemove: mouse,
+    onmouseover: mouse,
+    onmouseout: mouse,
+    onmousedown: mouse,
+    onmouseup: mouse,
+    ontouchstart: touch,
+    ontouchmove: touch,
+    ontouchend: touch,
+    ontouchcancel: touch,
+    ongesturestart: cb,
+    ongestureend: cb,
+    ongesturechange: cb,
+    onfocus: focus,
+    onblur: focus,
+    onsubmit: cb,
+    onreset: cb,
+    onchange: cb,
+    oninput: cb,
+    ondragdrop: cb,
+    onselect: cb
+  });
+
+}).call(this);
+
+(function() {
+  var Gesture, win;
+
+  Gesture = (function() {
+    function Gesture(arg) {
+      this.timeout = arg.timeout, this.on = arg.on, this.off = arg.off, this["do"] = arg["do"], this.fail = arg.fail;
+      if (this.timeout == null) {
+        this.timeout = 500;
+      }
+      if (this.off == null) {
+        this.off = function() {};
+      }
+      if (this.on == null) {
+        this.on = function() {};
+      }
+      if (this["do"] == null) {
+        this["do"] = function(p) {
+          return p;
+        };
+      }
+      if (this.fail == null) {
+        this.fail = function() {};
+      }
+      this.action = (function(_this) {
+        return function(e) {
+          if (_this.timer) {
+            return _this.fail();
+          } else {
+            return _this.promise(e);
+          }
+        };
+      })(this);
+      this.timer = null;
+      this.off();
+    }
+
+    Gesture.prototype.cancel = function() {
+      clearTimeout(this.timer);
+      this.timer = null;
+      return this.off();
+    };
+
+    Gesture.prototype.promise = function(e) {
+      var main, timer;
+      this.timer = true;
+      timer = new Promise((function(_this) {
+        return function(_, ng) {
+          return _this.timer = setTimeout(function() {
+            return ng(new Error("reset " + _this.timeout + "ms "));
+          }, _this.timeout);
+        };
+      })(this));
+      main = this["do"](new Promise((function(_this) {
+        return function(ok) {
+          _this.on();
+          return ok(e);
+        };
+      })(this)));
+      return Promise.race([main, timer]).then((function(_this) {
+        return function() {
+          return clearTimeout(_this.timer);
+        };
+      })(this))["catch"]((function(_this) {
+        return function(e) {
+          return _this.fail();
+        };
+      })(this)).then((function(_this) {
+        return function() {
+          _this.timer = null;
+          return _this.off();
+        };
+      })(this));
+    };
+
+    Gesture.prototype.tap = function(o) {
+      o.onclick = this.action;
+      o.onmouseup = this.action;
+      o.ontouchend = this.action;
+      return o;
+    };
+
+    return Gesture;
+
+  })();
+
+  win = module.exports;
+
+  win.gesture = Gesture;
 
 }).call(this);
 
@@ -405,6 +650,11 @@
   win.on.scroll_end.push(Layout.move);
 
   win.on.resize.push(Layout.move);
+
+}).call(this);
+
+(function() {
+
 
 }).call(this);
 

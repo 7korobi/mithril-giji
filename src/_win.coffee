@@ -175,5 +175,38 @@ module.exports = win =
       window.addEventListener "storage", (event)->
         console.log "on storage"
 
+    if true # copy paste event
+      window.addEventListener "cut", ()->
+      window.addEventListener "copy", ()->
+      window.addEventListener "paste", ()->
+
+    if false # navigator.geolocation
+      success = (pos)->
+        {latitude, longitude, accuracy, altitude, altitudeAccuracy, heading, speed} = pos
+      error = ({message, code})->
+      navigator.geolocation.watchPosition success, error,
+        enableHighAccuracy: true
+        timeout: 1000
+        maximumAge: 0
+
+    if document.hidden
+      "隠れています。"
+
+
     if "onload" of window
       window.addEventListener "load", win.do.load
+
+
+if window.applicationCache
+  event = ({type, timeStamp})-> 
+    console.log "::#{type} - #{timeStamp}"
+  progress = ({type, timeStamp, lengthComputable, loaded, total})-> 
+    console.log "::#{type} #{loaded} / #{total} - #{timeStamp}"
+  applicationCache.addEventListener "checking", event
+  applicationCache.addEventListener "downloading", event
+  applicationCache.addEventListener "progress", progress
+  applicationCache.addEventListener "cached", event
+  applicationCache.addEventListener "noupdate", event
+  applicationCache.addEventListener "updateready", event
+  applicationCache.addEventListener "error", event
+  applicationCache.addEventListener "obsolete", event
