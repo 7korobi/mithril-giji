@@ -1,7 +1,7 @@
 {
   "name": "mithril-giji",
   "description": "mithril library for 人狼議事",
-  "version": "0.0.18",
+  "version": "0.0.23",
   "author": "7korobi <7korobi@gmail.com>",
   "repository": {
     "type": "git",

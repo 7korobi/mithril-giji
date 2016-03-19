@@ -1,6 +1,6 @@
 /**
  mithril-giji - mithril library for 人狼議事
- @version v0.0.18
+ @version v0.0.21
  @link https://github.com/7korobi/mithril-giji
  @license 
 **/
@@ -365,41 +365,55 @@
 
   Gesture = (function() {
     function Gesture(arg) {
-      this.timeout = arg.timeout, this.on = arg.on, this.off = arg.off, this["do"] = arg["do"], this.fail = arg.fail;
+      this.timeout = arg.timeout, this.disable = arg.disable, this.fail = arg.fail, this.check = arg.check, this["do"] = arg["do"];
       if (this.timeout == null) {
         this.timeout = 500;
       }
-      if (this.off == null) {
-        this.off = function() {};
+      if (this.disable == null) {
+        this.disable = m.prop(false);
       }
-      if (this.on == null) {
-        this.on = function() {};
+      if (this.fail == null) {
+        this.fail = function() {};
+      }
+      if (this.check == null) {
+        this.check = function() {
+          return true;
+        };
       }
       if (this["do"] == null) {
         this["do"] = function(p) {
           return p;
         };
       }
-      if (this.fail == null) {
-        this.fail = function() {};
-      }
       this.action = (function(_this) {
         return function(e) {
-          if (_this.timer) {
-            return _this.fail();
-          } else {
-            return _this.promise(e);
+          switch (false) {
+            case !_this.timer:
+            case !!_this.check():
+              _this.fail();
+              break;
+            default:
+              _this.promise(e);
           }
+          return false;
         };
       })(this);
-      this.timer = null;
       this.off();
     }
+
+    Gesture.prototype.on = function() {
+      return this.disable(true);
+    };
+
+    Gesture.prototype.off = function() {
+      this.timer = null;
+      return this.disable(false);
+    };
 
     Gesture.prototype.cancel = function() {
       clearTimeout(this.timer);
       this.timer = null;
-      return this.off();
+      return this.disable(false);
     };
 
     Gesture.prototype.promise = function(e) {
@@ -418,7 +432,7 @@
           return ok(e);
         };
       })(this)));
-      return Promise.race([main, timer]).then((function(_this) {
+      return Promise.race([timer, main]).then((function(_this) {
         return function() {
           return clearTimeout(_this.timer);
         };
@@ -428,10 +442,16 @@
         };
       })(this)).then((function(_this) {
         return function() {
-          _this.timer = null;
           return _this.off();
         };
       })(this));
+    };
+
+    Gesture.prototype.form = function(o) {
+      o.oninput = this.check;
+      o.onchange = this.check;
+      o.onsubmit = this.action;
+      return o;
     };
 
     Gesture.prototype.tap = function(o) {

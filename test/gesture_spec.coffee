@@ -7,10 +7,12 @@ describe "win.gesture", ->
     step = []
     g = new win.gesture
       timeout: 500
-      on: ->
-        step.push "on"
-      off: ->
-        step.push "off"
+      check: -> true
+      disable: (bool)->
+        if bool
+          step.push "on"
+        else
+          step.push "off"
       do: (p)->
         p
         .then (e)->
@@ -36,10 +38,12 @@ describe "win.gesture", ->
     step = []
     g = new win.gesture
       timeout: 10
-      on: ->
-        step.push "on"
-      off: ->
-        step.push "off"
+      check: -> true
+      disable: (bool)->
+        if bool
+          step.push "on"
+        else
+          step.push "off"
       do: (p)->
         p
         .then (e)->

@@ -1,24 +1,32 @@
 class Gesture
-  constructor: ({ @timeout, @on, @off, @do, @fail })->
+  constructor: ({ @timeout, @disable, @fail, @check, @do })->
     @timeout ?= 500
-    @off ?= ->
-    @on ?= ->
-    @do ?= (p)-> p
+    @disable ?= m.prop(false)
     @fail ?= ->
+    @check ?= -> true
+    @do ?= (p)-> p
 
     @action = (e)=>
-      if @timer
-        @fail()
-      else
-        @promise(e)
+      switch
+        when @timer, not @check()
+          @fail()
+        else
+          @promise(e)
+      false
 
-    @timer = null
     @off()
+
+  on: ->
+    @disable true
+
+  off: ->
+    @timer = null
+    @disable false
 
   cancel: ->
     clearTimeout @timer
     @timer = null
-    @off()
+    @disable false
 
   promise: (e)->
     @timer = true
@@ -31,15 +39,19 @@ class Gesture
       @on()
       ok e
 
-    Promise.race [main, timer]
+    Promise.race [timer, main]
     .then ()=>
       clearTimeout @timer
     .catch (e)=>
       @fail()
     .then ()=>
-      @timer = null
       @off()
 
+  form: (o)->
+    o.oninput = @check
+    o.onchange = @check
+    o.onsubmit = @action
+    o
 
   tap: (o)->
     o.onclick = @action
