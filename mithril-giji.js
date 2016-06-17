@@ -1,6 +1,6 @@
 /**
  mithril-giji - mithril library for 人狼議事
- @version v0.0.21
+ @version v0.0.44
  @link https://github.com/7korobi/mithril-giji
  @license 
 **/
@@ -361,24 +361,38 @@
 }).call(this);
 
 (function() {
-  var Gesture, win;
+  var Gesture, btn, win;
+
+  btn = function(bool, o) {
+    if (o["class"] == null) {
+      o["class"] = 'edge';
+    }
+    if (bool) {
+      return o.className = "btn " + o["class"] + " active";
+    } else {
+      return o.className = "btn " + o["class"];
+    }
+  };
 
   Gesture = (function() {
     function Gesture(arg) {
-      this.timeout = arg.timeout, this.disable = arg.disable, this.fail = arg.fail, this.check = arg.check, this["do"] = arg["do"];
+      this.timeout = arg.timeout, this.debounce = arg.debounce, this.disable = arg.disable, this.fail = arg.fail, this.check = arg.check, this["do"] = arg["do"];
+      if (this.debounce == null) {
+        this.debounce = 100;
+      }
       if (this.timeout == null) {
         this.timeout = 500;
       }
       if (this.disable == null) {
         this.disable = m.prop(false);
       }
-      if (this.fail == null) {
-        this.fail = function() {};
-      }
       if (this.check == null) {
         this.check = function() {
           return true;
         };
+      }
+      if (this.fail == null) {
+        this.fail = function() {};
       }
       if (this["do"] == null) {
         this["do"] = function(p) {
@@ -386,28 +400,41 @@
         };
       }
       this.action = (function(_this) {
-        return function(e) {
-          switch (false) {
-            case !_this.timer:
-            case !!_this.check():
-              _this.fail();
-              break;
-            default:
-              _this.promise(e);
-          }
-          return false;
+        return function(value, debug) {
+          return function(e) {
+            e.value = value;
+            switch (false) {
+              case !_this.timer:
+                e.message = "in progress.";
+                _this.fail(e);
+                break;
+              case !!_this.check(e):
+                e.message = "validate fail.";
+                _this.fail(e);
+                break;
+              default:
+                _this.promise(e);
+            }
+            return false;
+          };
         };
       })(this);
       this.off();
     }
 
+    Gesture.prototype.active = function() {
+      return !this.timer && this.check();
+    };
+
     Gesture.prototype.on = function() {
+      this.disabled = true;
       return this.disable(true);
     };
 
     Gesture.prototype.off = function() {
       this.timer = null;
-      return this.disable(false);
+      this.disable(false);
+      return this.disabled = false;
     };
 
     Gesture.prototype.cancel = function() {
@@ -418,17 +445,18 @@
 
     Gesture.prototype.promise = function(e) {
       var main, timer;
+      this.on();
       this.timer = true;
       timer = new Promise((function(_this) {
         return function(_, ng) {
           return _this.timer = setTimeout(function() {
-            return ng(new Error("reset " + _this.timeout + "ms "));
+            e.message = "reset " + _this.timeout + "ms ";
+            return ng(e);
           }, _this.timeout);
         };
       })(this));
       main = this["do"](new Promise((function(_this) {
         return function(ok) {
-          _this.on();
           return ok(e);
         };
       })(this)));
@@ -438,26 +466,43 @@
         };
       })(this))["catch"]((function(_this) {
         return function(e) {
-          return _this.fail();
+          return _this.fail(e);
         };
       })(this)).then((function(_this) {
         return function() {
-          return _this.off();
+          return setTimeout(function() {
+            return _this.off();
+          }, _this.debounce);
         };
       })(this));
+    };
+
+    Gesture.prototype.submit = function(o) {
+      btn(!this.active(), o);
+      o.type = "submit";
+      return o;
     };
 
     Gesture.prototype.form = function(o) {
       o.oninput = this.check;
       o.onchange = this.check;
-      o.onsubmit = this.action;
+      o.onsubmit = this.action();
       return o;
     };
 
-    Gesture.prototype.tap = function(o) {
-      o.onclick = this.action;
-      o.onmouseup = this.action;
-      o.ontouchend = this.action;
+    Gesture.prototype.tap = function(value, o) {
+      o.onclick = this.action(value);
+      o.onmouseup = this.action(value);
+      o.ontouchend = this.action(value);
+      return o;
+    };
+
+    Gesture.prototype.menu = function(value, state, o) {
+      btn(value === state, o);
+      o.key = "menu-" + value;
+      o.onclick = this.action(value);
+      o.onmouseup = this.action(value);
+      o.ontouchend = this.action(value);
       return o;
     };
 

@@ -1,27 +1,48 @@
+
+btn = (bool, o)->
+  o.class ?= 'edge'
+  if bool
+    o.className = "btn #{o.class} active"
+  else
+    o.className = "btn #{o.class}"
+
+
 class Gesture
-  constructor: ({ @timeout, @disable, @fail, @check, @do })->
+  constructor: ({ @timeout, @debounce, @disable, @fail, @check, @do })->
+    @debounce ?= 100
     @timeout ?= 500
     @disable ?= m.prop(false)
-    @fail ?= ->
     @check ?= -> true
+    @fail ?= ->
     @do ?= (p)-> p
 
-    @action = (e)=>
-      switch
-        when @timer, not @check()
-          @fail()
-        else
-          @promise(e)
-      false
+    @action = (value, debug)=>
+      (e)=>
+        e.value = value
+        switch
+          when @timer
+            e.message = "in progress."
+            @fail e
+          when not @check e
+            e.message = "validate fail."
+            @fail e
+          else
+            @promise e
+        false
 
     @off()
 
+  active: ->
+    not @timer && @check()
+
   on: ->
+    @disabled = true
     @disable true
 
   off: ->
     @timer = null
     @disable false
+    @disabled = false
 
   cancel: ->
     clearTimeout @timer
@@ -29,34 +50,50 @@ class Gesture
     @disable false
 
   promise: (e)->
+    @on()
     @timer = true
     timer = new Promise (_, ng)=>
       @timer = setTimeout =>
-        ng new Error "reset #{ @timeout }ms "
+        e.message = "reset #{ @timeout }ms "
+        ng e
       , @timeout
 
     main = @do new Promise (ok)=>
-      @on()
       ok e
 
     Promise.race [timer, main]
     .then ()=>
       clearTimeout @timer
     .catch (e)=>
-      @fail()
+      @fail e
     .then ()=>
-      @off()
+      setTimeout =>
+        @off()
+      , @debounce
+
+  submit: (o)->
+    btn ! @active(), o
+    o.type = "submit"
+    o
 
   form: (o)->
     o.oninput = @check
     o.onchange = @check
-    o.onsubmit = @action
+    o.onsubmit = @action()
     o
 
-  tap: (o)->
-    o.onclick = @action
-    o.onmouseup = @action
-    o.ontouchend = @action
+  tap: (value, o)->
+    o.onclick = @action value
+    o.onmouseup = @action value
+    o.ontouchend = @action value
+    o
+
+  menu: (value, state, o)->
+    btn value == state, o
+    o.key = "menu-#{value}"
+    o.onclick = @action value
+    o.onmouseup = @action value
+    o.ontouchend = @action value
     o
 
 win = module.exports

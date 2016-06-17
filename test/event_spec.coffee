@@ -1,4 +1,3 @@
-{expect} = require('chai')
 win = require("../mithril-giji.js")
 
 describe "events", ()->
