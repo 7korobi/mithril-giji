@@ -11,12 +11,6 @@ class ScrollSpy
       left_by = 0
       window.scrollBy(left_by, top_by) if left_by || top_by
 
-  interval = 5000
-  setInterval ->
-    if win.scroll?.center
-        win.scroll.tick( win.scroll.center , interval / 1000)
-  , interval
-
   @capture: =>
     full_id = @view()
 
@@ -48,6 +42,9 @@ class ScrollSpy
     @show_upper = true
     @size = 30
     @head = @tail = 0
+
+  prop: ->
+    @center?._id
 
   rescroll: (@prop)->
     window.requestAnimationFrame =>

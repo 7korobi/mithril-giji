@@ -30,7 +30,6 @@ scroll_end = ->
   scan()
 
 
-
 module.exports = win =
   do_event_list: (list, e)->
     return unless 0 < list.length
@@ -91,6 +90,7 @@ module.exports = win =
       win.do.layout()
 
   on:
+    tick: []
     layout: []
     resize: []
     scroll: []
@@ -130,6 +130,12 @@ module.exports = win =
   is_tap: false
 
   deploy: ->
+    interval = 5000
+    setInterval ->
+      win.do_event_list win.on.tick, interval / 1000
+    , interval
+
+
     if "onorientationchange" of window
       window.addEventListener 'orientationchange', win.do.scroll
     else

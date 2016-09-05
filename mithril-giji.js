@@ -1,6 +1,6 @@
 /**
  mithril-giji - mithril library for 人狼議事
- @version v0.0.44
+ @version v0.0.45
  @link https://github.com/7korobi/mithril-giji
  @license 
 **/
@@ -107,6 +107,7 @@
       }
     },
     on: {
+      tick: [],
       layout: [],
       resize: [],
       scroll: [],
@@ -145,7 +146,11 @@
     compass: 0,
     is_tap: false,
     deploy: function() {
-      var error, success;
+      var error, interval, success;
+      interval = 5000;
+      setInterval(function() {
+        return win.do_event_list(win.on.tick, interval / 1000);
+      }, interval);
       if ("onorientationchange" in window) {
         window.addEventListener('orientationchange', win["do"].scroll);
       } else {
@@ -727,8 +732,6 @@
   var ScrollSpy, win;
 
   ScrollSpy = (function() {
-    var interval;
-
     ScrollSpy.elems = {};
 
     ScrollSpy.go = function(id, offset) {
@@ -746,15 +749,6 @@
         }
       }
     };
-
-    interval = 5000;
-
-    setInterval(function() {
-      var ref;
-      if ((ref = win.scroll) != null ? ref.center : void 0) {
-        return win.scroll.tick(win.scroll.center, interval / 1000);
-      }
-    }, interval);
 
     ScrollSpy.capture = function() {
       var full_id, id, spy;
@@ -797,6 +791,11 @@
       this.size = 30;
       this.head = this.tail = 0;
     }
+
+    ScrollSpy.prototype.prop = function() {
+      var ref;
+      return (ref = this.center) != null ? ref._id : void 0;
+    };
 
     ScrollSpy.prototype.rescroll = function(prop) {
       this.prop = prop;
